@@ -13,8 +13,8 @@ def listAsc():
                 out = os.path.join(r,files) + "\n" 
                 ascList.write(out)
                 #ascList.append(os.path.join(r,files))
-    
     #return ascList
+
 #Retrieves list of asc files from file for processing                
 def readList():
     ascFile = open('asc.list.txt')
@@ -28,9 +28,12 @@ def readList():
 #Formats date string
 def getDate(stringdate):
     dateval = time.strptime(stringdate,"%d-%b-%Y")
-    print time.strftime("%b-%Y", dateval)
-    return time.strftime("%b-%Y", dateval)
-
+    #print dateval
+    #print time.strftime("%b-%Y", dateval)
+    #return time.strftime("%b-%Y", dateval)
+    #return str(dateval)
+    return time.strftime("%d-%b-%Y", dateval)
+    
 def removeTime():
     pass
     
@@ -48,10 +51,8 @@ def process(asc):
         if line.find("Equ_time")!=-1:
             dummy = line.split()
             yeardate = getDate(dummy[4][1:])
-            year = yeardate[4:]
-            month = yeardate[:3] 
-            #year = dummy[5][0:4]    #gets year
-            #month = dummy[5][5:7]   #gets month 
+            year = yeardate[7:]
+           
         elif line[0] =='#':
             continue
         else:
@@ -61,20 +62,17 @@ def process(asc):
                 ycount += 1
             else:
                 continue
-                
             filename = year + extension
-            
             if os.path.isfile(filename):
                 g = open(filename, 'at')
             else:
                 g = open(filename,'wt')
             
-            #out = "    %s    %s    %s    %s    \n" % ( entry[0],entry[1],entry[2],entry[3],)       #To do: Better formatting
-            
             #g.write(out)
             if len(line.split()) > 5:
                 line = line[:-6] + "\n"
-            g.write(month+"  "+line[12:])
+            #print filename
+            g.write(yeardate+"  "+line[12:])
     
     
     f.close()
@@ -82,10 +80,10 @@ def process(asc):
         g.close()
     g.close()
 
-
-
+#process('./she/data/j2p0025c003.asc ')
+#print os.getcwd()
 if __name__ == "__main__":
     listAsc()
     ascList =readList()
-    for line in ascList:
+    for line in ascList[:2]:
         process(line)
